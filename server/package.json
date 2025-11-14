@@ -1,0 +1,27 @@
+{
+    "name": "server",
+    "version": "1.0.0",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "watch:ts": "tsc -w -p tsconfig.json",
+        "watch:node": "nodemon --watch dist --exec node dist/index.js",
+        "dev": "concurrently \"npm run watch:ts\" \"npm run watch:node\""
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+        "@types/ws": "^8.18.1",
+        "typescript": "^5.9.3",
+        "ws": "^8.18.3"
+    },
+    "devDependencies": {
+        "@types/node": "^24.10.1",
+        "concurrently": "^9.2.1",
+        "nodemon": "^3.1.11",
+        "ts-node-dev": "^2.0.0"
+    }
+}
