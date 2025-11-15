@@ -1,4 +1,5 @@
 import WebSocket from "ws";
+import { SupportedMessage } from "./models/incomingMessages.js";
 
 const parseMessage = (message: WebSocket.RawData) => {
     console.log("type of message", typeof message);
@@ -15,5 +16,6 @@ export default function messageHandler(
     isBinary: boolean
 ) {
     const data = parseMessage(message);
-    console.log("message received", data);
+    if ((data.action = SupportedMessage.CreateQuiz))
+        console.log("message received", data);
 }

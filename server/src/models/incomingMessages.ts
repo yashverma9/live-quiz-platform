@@ -1,4 +1,5 @@
 export enum SupportedMessage {
+    CreateQuiz = "CREATE_QUIZ",
     StartQuiz = "START_QUIZ",
     JoinQuiz = "JOIN_QUIZ",
     AnswerQuiz = "ANSWER_QUIZ",

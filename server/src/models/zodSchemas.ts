@@ -1,0 +1,16 @@
+import { z } from "zod";
+
+export interface Question {
+    questionId: string;
+    question: string;
+    options: string[];
+    answer: string;
+}
+
+export type Questions = Question[];
+
+export const CreateQuiz = z.object({
+    hostId: z.string(),
+    title: z.string(),
+    questions: z.array(z.object()),
+});
