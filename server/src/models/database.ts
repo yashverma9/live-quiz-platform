@@ -65,7 +65,7 @@ export async function createQuiz(
         console.error("failed to create quiz in db", e);
         await prisma.$disconnect();
         return {
-            message: `Error creating quiz ${e}`,
+            message: `Error creating quiz`,
             success: false,
         };
     }
@@ -79,7 +79,7 @@ export async function getAllQuiz(hostId: number) {
             },
         });
         console.log(`all quizes for host ${hostId}`, quizes);
-        return quizes;
+        return { success: true, quizes: quizes };
     } catch (e) {
         console.error("failed to fetch quizes from the db", e);
         await prisma.$disconnect();

@@ -27,17 +27,20 @@ quizRouter.get("/", (req, res) => {
 quizRouter.post("/create", validatePayload, async (req, res) => {
     const payload = req.body;
     const { hostId, title, questions } = payload;
-    await createQuiz(title, hostId, questions);
-    res.status(200).send({
-        message: "Received payload",
-    });
+    const resp = await createQuiz(title, hostId, questions);
+    if (resp.success)
+        res.status(200).json({
+            resp,
+        });
+    else
+        res.status(500).json({
+            resp,
+        });
 });
 
 quizRouter.get("/all", async (req, res) => {
     const hostId = Number(req.query.hostId);
-    const quizes = await getAllQuiz(hostId);
-    res.status(200).json({
-        message: "Success",
-        quizes: quizes,
-    });
+    const resp = await getAllQuiz(hostId);
+    if (resp.success) res.status(200).json(resp);
+    else res.status(500).json(resp);
 });

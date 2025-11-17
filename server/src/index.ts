@@ -4,9 +4,11 @@ import express from "express";
 import messageHandler from "./coreHandlers.js";
 import { quizRouter } from "./router/quiz.js";
 import { userRouter } from "./router/user.js";
+import cors from "cors";
 
 // Using express as server
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 const server = app.listen(8080, () => {

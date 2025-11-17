@@ -1,7 +1,9 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function createQuiz() {
+    const router = useRouter();
     interface Question {
         question: string;
         options: string[];
@@ -52,13 +54,37 @@ export default function createQuiz() {
         }
     }
 
-    function handleCreate() {
+    async function handleCreate() {
         console.log(
             "questionCount: ",
             questionCount,
             "questionbank:",
             questionBank
         );
+
+        try {
+            const resp = await fetch("http://localhost:8080/quiz/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    title,
+                    hostId,
+                    questions: questionBank,
+                }),
+            });
+            const data = await resp.json();
+            console.log("resp: ", resp);
+            console.log("data:", data);
+            console.log("success:", data.resp.success);
+            if (data.resp.success) {
+                console.log("in");
+                router.push("/dashboard");
+            }
+        } catch (e) {
+            console.error("Error creating quiz: ", e);
+        }
     }
 
     return (
