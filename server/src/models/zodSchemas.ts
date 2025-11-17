@@ -10,7 +10,7 @@ export interface Question {
 export type Questions = Question[];
 
 export const CreateQuiz = z.object({
-    hostId: z.string(),
+    hostId: z.number(),
     title: z.string(),
     questions: z.array(z.object()),
 });

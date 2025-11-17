@@ -1,6 +1,7 @@
 import express from "express";
 import { z } from "zod";
 import { CreateQuiz } from "../models/zodSchemas.js";
+import { createQuiz, getAllQuiz } from "../models/database.js";
 
 export const quizRouter = express.Router();
 
@@ -23,8 +24,20 @@ quizRouter.get("/", (req, res) => {
     });
 });
 
-quizRouter.post("/create", validatePayload, (req, res) => {
-    const payload = res.status(200).send({
+quizRouter.post("/create", validatePayload, async (req, res) => {
+    const payload = req.body;
+    const { hostId, title, questions } = payload;
+    await createQuiz(title, hostId, questions);
+    res.status(200).send({
         message: "Received payload",
+    });
+});
+
+quizRouter.get("/all", async (req, res) => {
+    const hostId = Number(req.query.hostId);
+    const quizes = await getAllQuiz(hostId);
+    res.status(200).json({
+        message: "Success",
+        quizes: quizes,
     });
 });

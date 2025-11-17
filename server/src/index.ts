@@ -3,6 +3,7 @@ import http from "http";
 import express from "express";
 import messageHandler from "./coreHandlers.js";
 import { quizRouter } from "./router/quiz.js";
+import { userRouter } from "./router/user.js";
 
 // Using express as server
 const app = express();
@@ -28,6 +29,7 @@ const appRouter = express.Router();
 app.use(appRouter);
 
 appRouter.use("/quiz", quizRouter);
+appRouter.use("/user", userRouter);
 
 // const server = http.createServer(function (request: any, response: any) {
 //     console.log(new Date() + "Request received from " + request.url);
