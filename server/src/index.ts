@@ -23,7 +23,7 @@ wss.on("connection", function (connection) {
     });
 
     connection.on("message", function (message, isBinary) {
-        messageHandler(message, isBinary);
+        messageHandler(connection, message, isBinary);
     });
 });
 

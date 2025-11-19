@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export interface Question {
-    questionId: string;
+    questionId: number;
     question: string;
     options: string[];
     answer: string;

@@ -1,14 +1,17 @@
 import { v4 as uuid4 } from "uuid";
 import type { Questions } from "./models/zodSchemas.js";
+import WebSocket from "ws";
 
 export class Participant {
-    userId: string;
-    name: string;
+    userId: number;
+    username: string;
+    socket: WebSocket;
     score: number;
 
-    constructor(name: string) {
-        this.userId = uuid4();
-        this.name = name;
+    constructor(userId: number, username: string, socket: WebSocket) {
+        this.userId = userId;
+        this.username = username;
+        this.socket = socket;
         this.score = 0;
     }
 
@@ -19,22 +22,29 @@ export class Participant {
     getParticipantDetails() {
         return {
             userId: this.userId,
-            name: this.name,
+            name: this.username,
             score: this.score,
         };
     }
 }
 
 export class QuizManager {
-    quizId: string;
-    participants: Map<string, Participant> = new Map();
+    quizId: number;
+    participants: Map<number, Participant> = new Map();
     hostId: string;
     title: string;
     questions: Questions;
     currentQuestion: number = 0;
 
+    // constructor() {
+    //     this.quizId = "";
+    //     this.hostId = "";
+    //     this.title = "";
+    //     this.questions = [];
+    // }
+
     constructor(
-        quizId: string,
+        quizId: number,
         hostId: string,
         title: string,
         questions: Questions
@@ -49,8 +59,16 @@ export class QuizManager {
         this.participants.set(participantDetails.userId, participantDetails);
     }
 
-    nextQuestion() {
+    getNextQuestion() {
         this.currentQuestion += 1;
         return this.questions[this.currentQuestion - 1];
+    }
+
+    broadcastMessage(message: WebSocket.RawData) {
+        console.log("Message being broadcasted: ", message);
+        this.participants.forEach((participant) => {
+            participant.socket.send(message); // check what format/type for payload is expected here
+            console.log(`Message sent to ${participant.username}`);
+        });
     }
 }

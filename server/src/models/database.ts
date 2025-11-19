@@ -46,7 +46,7 @@ export async function createQuiz(
     title: string,
     hostId: number,
     questions: {
-        questionId: string;
+        questionId: number;
         question: string;
         answer: string;
         option: string[];
