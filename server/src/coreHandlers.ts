@@ -1,5 +1,5 @@
 import WebSocket from "ws";
-import { SupportedMessage } from "./models/incomingMessages.js";
+import { SupportedMessage, type IncomingMessage } from "./models/incomingMessages.js";
 import { Participant, QuizManager } from "./QuizManager.js";
 import { SupportedMessageOutgoing } from "./models/outgoingMessages.js";
 
@@ -17,7 +17,7 @@ const parseMessage = (message: WebSocket.RawData) => {
 
 export default function messageHandler(
     connection: WebSocket,
-    message: WebSocket.RawData,
+    message: IncomingMessage,
     isBinary: boolean
 ) {
     const data = parseMessage(message);
@@ -63,17 +63,18 @@ export default function messageHandler(
         data = {
             action: "START_QUIZ",
             payload : {
+                userId: 10,
                 quizId: 1,
             }
         }
     */
-        const { quizId } = data.payload;
+        const { userId, quizId } = data.payload;
         const quiz = quizzes.get(quizId);
         const currentQuestion = quiz?.getNextQuestion();
         const payload = {
-            action: SupportedMessageOutgoing.NewQuestion,
+            action: SupportedMessageOutgoing.StartQuiz,
             payload: {
-                currentQuestion: currentQuestion,
+                userId: 
             },
         };
         quiz?.broadcastMessage(payload);

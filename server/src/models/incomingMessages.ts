@@ -1,3 +1,5 @@
+import type { Questions } from "./zodSchemas.js";
+
 export enum SupportedMessage {
     CreateQuiz = "CREATE_QUIZ",
     StartQuiz = "START_QUIZ",
@@ -5,19 +7,32 @@ export enum SupportedMessage {
     AnswerQuiz = "ANSWER_QUIZ",
 }
 
-export interface CreateQuizMessage {
-    adminId: string;
-    quizId: string;
+export interface CreateQuizData {
+    quizId: number;
+    hostId: number;
+    title: string;
+    questions: Questions;
 }
 
-export interface JoinQuiz {
-    quizId: string;
-    userId: string;
+export interface JoinQuizData {
+    quizId: number;
+    userId: number;
+    username: string;
 }
 
-export interface AnswerQuiz {
-    quizId: string;
-    userId: string;
+export interface StartQuizData {
+    quizId: number;
+    userId: number;
+}
+
+export interface AnswerQuizData {
+    quizId: number;
+    userId: number;
     questionId: string;
     answer: string;
+}
+
+export interface IncomingMessage {
+    action: SupportedMessage;
+    data: CreateQuizData | StartQuizData | JoinQuizData | AnswerQuizData;
 }

@@ -1,6 +1,7 @@
 import { v4 as uuid4 } from "uuid";
 import type { Questions } from "./models/zodSchemas.js";
 import WebSocket from "ws";
+import type { OutgoingMessage } from "./models/outgoingMessages.js";
 
 export class Participant {
     userId: number;
@@ -64,7 +65,7 @@ export class QuizManager {
         return this.questions[this.currentQuestion - 1];
     }
 
-    broadcastMessage(message: WebSocket.RawData) {
+    broadcastMessage(message: OutgoingMessage) {
         console.log("Message being broadcasted: ", message);
         this.participants.forEach((participant) => {
             participant.socket.send(message); // check what format/type for payload is expected here
