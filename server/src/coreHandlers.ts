@@ -1,11 +1,21 @@
 import WebSocket from "ws";
-import { SupportedMessage, type IncomingMessage } from "./models/incomingMessages.js";
+import {
+    SupportedMessage,
+    type AnswerQuizData,
+    type CreateQuizData,
+    type IncomingMessage,
+    type JoinQuizData,
+    type StartQuizData,
+} from "./models/incomingMessages.js";
 import { Participant, QuizManager } from "./QuizManager.js";
-import { SupportedMessageOutgoing } from "./models/outgoingMessages.js";
+import {
+    SupportedMessageOutgoing,
+    type StartQuizOutgoingData,
+} from "./models/outgoingMessages.js";
 
 const quizzes = new Map<number, QuizManager>();
 
-const parseMessage = (message: WebSocket.RawData) => {
+const parseMessage = (message: WebSocket.RawData): IncomingMessage => {
     console.log("type of message", typeof message);
     if (typeof message === "string") {
         return JSON.parse(message);
@@ -17,17 +27,17 @@ const parseMessage = (message: WebSocket.RawData) => {
 
 export default function messageHandler(
     connection: WebSocket,
-    message: IncomingMessage,
+    message: WebSocket.RawData,
     isBinary: boolean
 ) {
-    const data = parseMessage(message);
-    console.log("message received", data);
+    const payload = parseMessage(message);
+    console.log("message received", payload);
 
-    if (data.action === SupportedMessage.CreateQuiz) {
+    if (payload.action === SupportedMessage.CreateQuiz) {
         /*
-        data = {
+        payload = {
             action: "CREATE_QUIZ",
-            payload : {
+            data : {
                 quizId: 1,
                 hostId: 1,
                 title: "Animals",
@@ -40,15 +50,16 @@ export default function messageHandler(
             }
         }
     */
-        const { quizId, hostId, title, questions } = data.payload;
+        const { quizId, hostId, title, questions } =
+            payload.data as CreateQuizData;
         const quiz = new QuizManager(quizId, hostId, title, questions);
         quizzes.set(quiz.quizId, quiz);
-    } else if (data.action === SupportedMessage.JoinQuiz) {
-        const { quizId, userId, username } = data.payload;
+    } else if (payload.action === SupportedMessage.JoinQuiz) {
+        const { quizId, userId, username } = payload.data as JoinQuizData;
         /*
-        data = {
+        payload = {
             action: "JOIN_QUIZ",
-            payload : {
+            data : {
                 quizId: 1,
                 userId: 10,
                 username: "vermayash"
@@ -58,25 +69,41 @@ export default function messageHandler(
 
         const participant = new Participant(userId, username, connection);
         quizzes.get(quizId)?.addParticipant(participant);
-    } else if (data.action === SupportedMessage.StartQuiz) {
+    } else if (payload.action === SupportedMessage.StartQuiz) {
         /*
-        data = {
+        payload = {
             action: "START_QUIZ",
-            payload : {
+            data : {
                 userId: 10,
                 quizId: 1,
             }
         }
     */
-        const { userId, quizId } = data.payload;
+        const { userId, quizId } = payload.data as StartQuizData;
         const quiz = quizzes.get(quizId);
         const currentQuestion = quiz?.getNextQuestion();
-        const payload = {
+        const outgoingPayload = {
             action: SupportedMessageOutgoing.StartQuiz,
-            payload: {
-                userId: 
-            },
+            data: {
+                userId: userId,
+                score: 0,
+                firstQuestionData: currentQuestion,
+            } as StartQuizOutgoingData,
         };
-        quiz?.broadcastMessage(payload);
+        quiz?.broadcastMessage(outgoingPayload);
+    } else if (payload.action === SupportedMessage.AnswerQuiz) {
+        /*
+        payload = {
+            action: "ANSWER_QUIZ",
+            data: {
+            }
+        }
+        */
+        const { quizId, userId, questionId, answer } =
+            payload.data as AnswerQuizData;
+
+        const isCorrect = quizzes
+            .get(quizId)
+            ?.checkAnswerCorrect(questionId, answer);
     }
 }

@@ -14,3 +14,23 @@ export const CreateQuiz = z.object({
     title: z.string(),
     questions: z.array(z.object()),
 });
+
+export interface QuizQuestionResponse {
+    userId: number;
+    answerOption: string;
+    answer: string;
+    time: number;
+}
+
+export interface ParticipantQuestionResponse {
+    answerOption: string;
+    answer: string;
+    correctAnswer: string;
+    time: number;
+}
+
+export interface QuizResponse {
+    correctAnswer: string;
+    correctOption: string;
+    response: QuizQuestionResponse[];
+}

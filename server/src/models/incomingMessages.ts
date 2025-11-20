@@ -28,7 +28,7 @@ export interface StartQuizData {
 export interface AnswerQuizData {
     quizId: number;
     userId: number;
-    questionId: string;
+    questionId: number;
     answer: string;
 }
 

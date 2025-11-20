@@ -5,9 +5,10 @@ export enum SupportedMessageOutgoing {
     EndQuiz = "END_QUIZ",
 }
 
-export interface StartQuizData {
+export interface StartQuizOutgoingData {
     userId: number;
     score: 0;
+    firstQuestionData: NewQuestionData;
 }
 
 export interface NewQuestionData {
@@ -33,5 +34,9 @@ export interface EndQuizData {
 
 export interface OutgoingMessage {
     action: SupportedMessageOutgoing;
-    data: StartQuizData | NewQuestionData | ScoreBreakData | EndQuizData;
+    data:
+        | StartQuizOutgoingData
+        | NewQuestionData
+        | ScoreBreakData
+        | EndQuizData;
 }
