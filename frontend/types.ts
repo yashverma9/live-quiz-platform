@@ -48,6 +48,8 @@ export interface ParticipantSocketMessage {
 // Web socket related types - HOST
 
 export enum HostMessageTypes {
+    CREATE_QUIZ = "CREATE_QUIZ",
+    START_QUIZ = "START_QUIZ",
     WAIT_FOR_QUIZ_START = "WAIT_FOR_QUIZ_START",
     NEW_QUESTION = "NEW_QUESTION",
     WAIT_FOR_NEXT_QUESTION = "WAIT_FOR_NEXT_QUESTION",

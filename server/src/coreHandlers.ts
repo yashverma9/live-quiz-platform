@@ -13,17 +13,9 @@ import {
     type StartQuizOutgoingData,
 } from "./models/outgoingMessages.js";
 
-const quizzes = new Map<number, QuizManager>();
+import { parseMessage } from "./utils/generic.js";
 
-const parseMessage = (message: WebSocket.RawData): IncomingMessage => {
-    console.log("type of message", typeof message);
-    if (typeof message === "string") {
-        return JSON.parse(message);
-    }
-    const buf = Buffer.from(message as any);
-    const text = buf.toString("utf8");
-    return JSON.parse(text);
-};
+const quizzes = new Map<number, QuizManager>();
 
 export default function messageHandler(
     connection: WebSocket,
@@ -31,7 +23,7 @@ export default function messageHandler(
     isBinary: boolean
 ) {
     const payload = parseMessage(message);
-    console.log("message received", payload);
+    console.log("message received", payload, typeof payload);
 
     if (payload.action === SupportedMessage.CreateQuiz) {
         /*
@@ -52,6 +44,7 @@ export default function messageHandler(
     */
         const { quizId, hostId, title, questions } =
             payload.data as CreateQuizData;
+
         const quiz = new QuizManager(quizId, hostId, title, questions);
         quizzes.set(quiz.quizId, quiz);
     } else if (payload.action === SupportedMessage.JoinQuiz) {
@@ -99,11 +92,25 @@ export default function messageHandler(
             }
         }
         */
-        const { quizId, userId, questionId, answer } =
+        const { quizId, userId, questionId, answer, time } =
             payload.data as AnswerQuizData;
 
-        const isCorrect = quizzes
-            .get(quizId)
-            ?.checkAnswerCorrect(questionId, answer);
+        const quiz = quizzes.get(quizId);
+        const participant = quiz?.participants.get(userId);
+
+        const { correctAnswer = "", isCorrect = undefined } =
+            quiz?.checkAnswerCorrect(questionId, answer) || {
+                correctAnswer: "",
+            };
+
+        quiz?.storeResponse(questionId, userId, answer, time, isCorrect);
+        participant?.storeResponse(
+            quizId,
+            questionId,
+            answer,
+            correctAnswer,
+            time,
+            isCorrect
+        );
     }
 }

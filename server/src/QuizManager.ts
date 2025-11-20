@@ -26,6 +26,23 @@ export class Participant {
         this.score = 0;
     }
 
+    storeResponse(
+        quizId: number,
+        questionId: number,
+        answer: string,
+        correctAnswer: string,
+        time: number,
+        isCorrect: boolean | undefined
+    ) {
+        this.quizResponses.set(quizId, new Map());
+        this.quizResponses.get(quizId)?.set(questionId, {
+            answer,
+            correctAnswer,
+            time,
+            isCorrect,
+        });
+    }
+
     addScore(points: number) {
         this.score += points;
     }
@@ -47,13 +64,7 @@ export class QuizManager {
     questions: Questions;
     currentQuestion: number = 0;
     responses: Map<number, QuizResponse> = new Map(); // {questionId: {QuizResponse}, ...}
-
-    // constructor() {
-    //     this.quizId = "";
-    //     this.hostId = "";
-    //     this.title = "";
-    //     this.questions = [];
-    // }
+    // questionAnsweredFlag: Map<number, boolean> = new Map(); // {userId: false}
 
     constructor(
         quizId: number,
@@ -65,6 +76,20 @@ export class QuizManager {
         this.hostId = hostId;
         this.title = title;
         this.questions = questions;
+
+        questions.map((question) => {
+            let correctOption = "";
+            const optionsList = ["a", "b", "c", "d"];
+            question.options.map((option, index) => {
+                if (option === question.answer)
+                    correctOption = optionsList[index] || "";
+            });
+            this.responses.set(question.questionId, {
+                correctAnswer: question.answer,
+                correctOption: correctOption,
+                response: [],
+            });
+        });
     }
 
     addParticipant(participantDetails: Participant) {
@@ -83,6 +108,21 @@ export class QuizManager {
         );
     }
 
+    storeResponse(
+        questionId: number,
+        userId: number,
+        answer: string,
+        time: number,
+        isCorrect: boolean | undefined
+    ) {
+        this.responses.get(questionId)?.response.push({
+            userId,
+            answer,
+            time,
+            isCorrect,
+        });
+    }
+
     broadcastMessage(message: OutgoingMessage) {
         console.log("Message being broadcasted: ", message);
         this.participants.forEach((participant) => {
@@ -92,8 +132,9 @@ export class QuizManager {
     }
 
     checkAnswerCorrect(questionId: number, answer: string) {
-        if (this.questions[questionId]?.answer === answer) return true;
+        const correctAnswer = this.questions[questionId]?.answer;
+        if (correctAnswer === answer) return { correctAnswer, isCorrect: true };
 
-        return false;
+        return { correctAnswer, isCorrect: false };
     }
 }

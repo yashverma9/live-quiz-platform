@@ -30,6 +30,7 @@ export interface AnswerQuizData {
     userId: number;
     questionId: number;
     answer: string;
+    time: number;
 }
 
 export interface IncomingMessage {

@@ -17,16 +17,16 @@ export const CreateQuiz = z.object({
 
 export interface QuizQuestionResponse {
     userId: number;
-    answerOption: string;
     answer: string;
     time: number;
+    isCorrect: boolean | undefined;
 }
 
 export interface ParticipantQuestionResponse {
-    answerOption: string;
     answer: string;
     correctAnswer: string;
     time: number;
+    isCorrect: boolean | undefined;
 }
 
 export interface QuizResponse {

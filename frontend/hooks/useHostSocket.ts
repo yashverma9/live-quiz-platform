@@ -33,5 +33,5 @@ export default function useHostSocket() {
         };
     }, []);
 
-    return { latestData };
+    return { socket, latestData };
 }
