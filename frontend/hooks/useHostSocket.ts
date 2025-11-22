@@ -3,17 +3,27 @@
 import { useState, useEffect } from "react";
 import { HostSocketMessage } from "@/types";
 
-export default function useHostSocket() {
+export default function useHostSocket(hostId: number) {
     const [socket, setSocket] = useState<null | WebSocket>(null);
     const [latestData, setLatestData] = useState<null | HostSocketMessage>(
         null
     );
+
+    console.log("hostId: ", hostId);
 
     useEffect(() => {
         const ws = new WebSocket("ws://localhost:8080");
 
         ws.onopen = () => {
             console.log("Socket connection opened for host!");
+            ws.send(
+                JSON.stringify({
+                    action: "JOIN_HOST",
+                    data: {
+                        hostId: hostId,
+                    },
+                })
+            );
             setSocket(ws);
         };
 

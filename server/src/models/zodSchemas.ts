@@ -9,6 +9,14 @@ export interface Question {
 
 export type Questions = Question[];
 
+export interface ParsedQuiz {
+    id: number;
+    title: string;
+    hostId: number;
+    createdAt: Date;
+    questions: Questions;
+}
+
 export const CreateQuiz = z.object({
     hostId: z.number(),
     title: z.string(),

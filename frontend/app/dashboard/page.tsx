@@ -3,10 +3,14 @@
 import useHostSocket from "@/hooks/useHostSocket";
 import useQuizes from "@/hooks/useQuizes";
 import { HostMessageTypes } from "@/types";
+import { useRouter } from "next/navigation";
 
 export default function dashboard() {
+    const hostId = 1; // HARDCODED FOR NOW
+
+    const router = useRouter();
     const { isLoading, quizes } = useQuizes();
-    const { socket, latestData } = useHostSocket();
+    const { socket, latestData } = useHostSocket(hostId);
 
     const startQuizHandler = (index: number) => {
         console.log("creating quiz room.. ");
@@ -19,11 +23,17 @@ export default function dashboard() {
                     quizId: quiz.id,
                     hostId: quiz.hostId,
                     title: quiz.title,
-                    questions: JSON.parse(quiz.questions), // We need to see the correct place to parse/stringify
+                    questions: quiz.questions,
                 },
             })
         );
+        router.push(
+            `/quiz-host/${quiz.id}?title=${quiz.title}&hostId=${quiz.hostId}`
+            // `/quiz-host/${quiz.id}?quizId=${quiz.id}&hostId=${quiz.hostId}`
+        );
     };
+
+    console.log("latestData from socket: ", latestData);
 
     return (
         <div className="w-full h-full">

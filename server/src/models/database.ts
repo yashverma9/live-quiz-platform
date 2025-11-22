@@ -1,5 +1,6 @@
 import { success } from "zod";
 import { PrismaClient } from "../generated/prisma/client.js";
+import type { ParsedQuiz } from "./zodSchemas.js";
 
 const prisma = new PrismaClient();
 
@@ -79,7 +80,13 @@ export async function getAllQuiz(hostId: number) {
             },
         });
         console.log(`all quizes for host ${hostId}`, quizes);
-        return { success: true, quizes: quizes };
+
+        const parsedQuiz: ParsedQuiz[] = quizes.map((quiz) => ({
+            ...quiz,
+            questions: JSON.parse(quiz.questions),
+        }));
+
+        return { success: true, quizes: parsedQuiz };
     } catch (e) {
         console.error("failed to fetch quizes from the db", e);
         await prisma.$disconnect();
