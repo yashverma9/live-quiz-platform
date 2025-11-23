@@ -12,35 +12,39 @@ export default function useHostSocket(hostId: number) {
     console.log("hostId: ", hostId);
 
     useEffect(() => {
-        const ws = new WebSocket("ws://localhost:8080");
+        if (hostId === -1) {
+            console.error("host id is not valid");
+        } else {
+            const ws = new WebSocket("ws://localhost:8080");
 
-        ws.onopen = () => {
-            console.log("Socket connection opened for host!");
-            ws.send(
-                JSON.stringify({
-                    action: "JOIN_HOST",
-                    data: {
-                        hostId: hostId,
-                    },
-                })
-            );
-            setSocket(ws);
-        };
+            ws.onopen = () => {
+                console.log("Socket connection opened for host!");
+                ws.send(
+                    JSON.stringify({
+                        action: "JOIN_HOST",
+                        data: {
+                            hostId: hostId,
+                        },
+                    })
+                );
+                setSocket(ws);
+            };
 
-        ws.onmessage = (message) => {
-            console.log(
-                "Message data received from web socket for host: ",
-                message.data
-            );
-            setLatestData(message.data);
-        };
+            ws.onmessage = (message) => {
+                console.log(
+                    "Message data received from web socket for host: ",
+                    message.data
+                );
+                setLatestData(message.data);
+            };
 
-        return () => {
-            ws.onopen = null;
-            ws.onmessage = null;
-            ws.close();
-            console.log("Closed web socket connection from host!");
-        };
+            return () => {
+                ws.onopen = null;
+                ws.onmessage = null;
+                ws.close();
+                console.log("Closed web socket connection from host!");
+            };
+        }
     }, []);
 
     return { socket, latestData };
