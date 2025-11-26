@@ -28,7 +28,7 @@ export default function dashboard() {
             })
         );
         router.push(
-            `/quiz-host/${quiz.id}?title=${quiz.title}&hostId=${quiz.hostId}`
+            `/host/quiz-host/${quiz.id}?title=${quiz.title}&hostId=${quiz.hostId}`
             // `/quiz-host/${quiz.id}?quizId=${quiz.id}&hostId=${quiz.hostId}`
         );
     };
