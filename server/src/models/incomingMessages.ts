@@ -1,6 +1,7 @@
 import type { Questions } from "./zodSchemas.js";
 
 export enum SupportedMessage {
+    JoinHost = "JOIN_HOST",
     CreateQuiz = "CREATE_QUIZ",
     StartQuiz = "START_QUIZ",
     JoinQuiz = "JOIN_QUIZ",
