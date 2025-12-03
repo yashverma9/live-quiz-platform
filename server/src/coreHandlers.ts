@@ -4,10 +4,11 @@ import {
     type AnswerQuizData,
     type CreateQuizData,
     type IncomingMessage,
+    type JoinHostData,
     type JoinQuizData,
     type StartQuizData,
 } from "./models/incomingMessages.js";
-import { Participant, QuizManager } from "./QuizManager.js";
+import { Host, Participant, QuizManager } from "./QuizManager.js";
 import {
     SupportedMessageOutgoing,
     type StartQuizOutgoingData,
@@ -25,7 +26,28 @@ export default function messageHandler(
     const payload = parseMessage(message);
     console.log("message received", payload, typeof payload);
 
-    if (payload.action === SupportedMessage.CreateQuiz) {
+    if (payload.action === SupportedMessage.JoinHost) {
+        /*
+        payload = {
+            action: "CREATE_QUIZ",
+            data : {
+                quizId: 1,
+                hostId: 1,
+                title: "Animals",
+                questions: [{
+                    questionId: 1,
+                    question: "What is a cat?",
+                    options: ["Animal", "Fish", "Bird", "Mammal"],
+                    answer: "Animal"
+                }]
+            }
+        }
+    */
+        const { hostId, username } = payload.data as JoinHostData;
+
+        const host = new Host(hostId, username, connection);
+        console.log("Host joined the connection: ", host);
+    } else if (payload.action === SupportedMessage.CreateQuiz) {
         /*
         payload = {
             action: "CREATE_QUIZ",

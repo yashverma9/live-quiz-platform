@@ -11,6 +11,18 @@ import type {
     OutgoingMessage,
 } from "./models/outgoingMessages.js";
 
+export class Host {
+    hostId: number;
+    username: string;
+    socket: WebSocket;
+
+    constructor(hostId: number, username: string, socket: WebSocket) {
+        this.hostId = hostId;
+        this.username = username;
+        this.socket = socket;
+    }
+}
+
 export class Participant {
     userId: number;
     username: string;

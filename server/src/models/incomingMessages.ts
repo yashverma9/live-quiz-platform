@@ -8,6 +8,11 @@ export enum SupportedMessage {
     AnswerQuiz = "ANSWER_QUIZ",
 }
 
+export interface JoinHostData {
+    hostId: number;
+    username: string;
+}
+
 export interface CreateQuizData {
     quizId: number;
     hostId: number;
@@ -36,5 +41,10 @@ export interface AnswerQuizData {
 
 export interface IncomingMessage {
     action: SupportedMessage;
-    data: CreateQuizData | StartQuizData | JoinQuizData | AnswerQuizData;
+    data:
+        | JoinHostData
+        | CreateQuizData
+        | StartQuizData
+        | JoinQuizData
+        | AnswerQuizData;
 }

@@ -1,16 +1,17 @@
 "use client";
 
-import useHostSocket from "@/hooks/useHostSocket";
+// import useHostSocket from "@/hooks/useHostSocket";
+import { useHostSocket } from "@/contexts/hostContext";
 import useQuizes from "@/hooks/useQuizes";
 import { HostMessageTypes } from "@/types";
 import { useRouter } from "next/navigation";
 
 export default function dashboard() {
-    const hostId = 1; // HARDCODED FOR NOW
+    // const hostId = 1; // HARDCODED FOR NOW
 
     const router = useRouter();
     const { isLoading, quizes } = useQuizes();
-    const { socket, latestData } = useHostSocket(hostId);
+    const { socket, latestData } = useHostSocket();
 
     const startQuizHandler = (index: number) => {
         console.log("creating quiz room.. ");

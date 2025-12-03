@@ -10,6 +10,8 @@ export interface HostContextType {
 }
 
 const hostId = 1; // Hardcoded for testing, later extract from auth
+const username = "vermayash@gmail.com"; // Hardcoded for testing, later extract from auth
+
 export const HostContext = createContext<HostContextType | null>(null);
 
 export function HostProvider({ children }: { children: React.ReactNode }) {
@@ -28,6 +30,7 @@ export function HostProvider({ children }: { children: React.ReactNode }) {
                     action: "JOIN_HOST",
                     data: {
                         hostId: hostId,
+                        username: username,
                     },
                 })
             );

@@ -1,4 +1,6 @@
-import useParticipantSocket from "@/hooks/useParticipantSocket";
+// import useParticipantSocket from "@/hooks/useParticipantSocket";
+
+import { useParticipantSocket } from "@/contexts/participantContext";
 
 export default function quiz({
     queryParam: { quizId },
@@ -7,6 +9,6 @@ export default function quiz({
 }) {
     console.log("Quizid: ", quizId);
 
-    const { latestData } = useParticipantSocket();
+    const { socket, latestData } = useParticipantSocket();
     console.log("latest data: ", latestData);
 }
