@@ -1,5 +1,6 @@
 "use client";
 
+import useAuth from "@/hooks/useAuth";
 import { ParticipantMessageTypes, ParticipantSocketMessage } from "@/types";
 import { useContext, createContext, useEffect, useState } from "react";
 
@@ -12,18 +13,19 @@ export const ParticipantContext = createContext<ParticipantContextType | null>(
     null
 );
 
-const participantId = 10; // Hardcoded for now, later use authentication
-
 export function ParticipantProvider({
     children,
 }: {
     children: React.ReactNode;
 }) {
+    const { participantId } = useAuth();
     const [socket, setSocket] = useState<WebSocket | null>(null);
     const [latestData, setLatestData] =
         useState<ParticipantSocketMessage | null>(null);
 
     useEffect(() => {
+        if (!participantId) return;
+
         const ws = new WebSocket("ws://localhost:8080");
 
         ws.onopen = () => {
@@ -56,7 +58,7 @@ export function ParticipantProvider({
                 );
             };
         };
-    }, []);
+    }, [participantId]);
 
     const value = { socket, latestData };
     return (

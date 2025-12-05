@@ -1,6 +1,7 @@
 "use client";
 
-import useHostSocket from "@/hooks/useHostSocket";
+// import useHostSocket from "@/hooks/useHostSocket";
+import { useHostSocket } from "@/contexts/hostContext";
 import { useEffect, useState } from "react";
 
 export default function quizHost({
@@ -14,7 +15,7 @@ export default function quizHost({
     const [quizTitle, setQuizTitle] = useState<string>();
     const [hostId, setHostId] = useState<number>(-1);
 
-    const { latestData } = useHostSocket(hostId);
+    const { latestData } = useHostSocket();
     console.log("latest data: ", latestData);
     console.log("quizId: ", quizId);
 

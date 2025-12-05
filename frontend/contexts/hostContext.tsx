@@ -1,5 +1,6 @@
 "use client";
 
+import useAuth from "@/hooks/useAuth";
 import { HostSocketMessage } from "@/types";
 import { error } from "console";
 import { createContext, useState, useEffect, useContext } from "react";
@@ -9,18 +10,19 @@ export interface HostContextType {
     socket: WebSocket | null;
 }
 
-const hostId = 1; // Hardcoded for testing, later extract from auth
-const username = "vermayash@gmail.com"; // Hardcoded for testing, later extract from auth
-
 export const HostContext = createContext<HostContextType | null>(null);
 
 export function HostProvider({ children }: { children: React.ReactNode }) {
+    const { hostId, hostUsername } = useAuth();
+
     const [socket, setSocket] = useState<WebSocket | null>(null);
     const [latestData, setLatestData] = useState<HostSocketMessage | null>(
         null
     );
 
     useEffect(() => {
+        if (!hostId || !hostUsername) return;
+
         const ws = new WebSocket("ws://localhost:8080");
         setSocket(ws);
         ws.onopen = () => {
@@ -30,7 +32,7 @@ export function HostProvider({ children }: { children: React.ReactNode }) {
                     action: "JOIN_HOST",
                     data: {
                         hostId: hostId,
-                        username: username,
+                        username: hostUsername,
                     },
                 })
             );
@@ -50,7 +52,7 @@ export function HostProvider({ children }: { children: React.ReactNode }) {
             ws.close();
             console.log("Socket connection closed to server from host client");
         };
-    }, []);
+    }, [hostId, hostUsername]);
 
     const value = { socket, latestData };
 
