@@ -143,6 +143,15 @@ export class QuizManager {
         });
     }
 
+    sendMessage(message: OutgoingMessage, socket: WebSocket, id: Number) {
+        socket.send(JSON.stringify(message));
+        console.log(
+            "Message being sent to specific host/participant id: ",
+            id,
+            message
+        );
+    }
+
     checkAnswerCorrect(questionId: number, answer: string) {
         const correctAnswer = this.questions[questionId]?.answer;
         if (correctAnswer === answer) return { correctAnswer, isCorrect: true };

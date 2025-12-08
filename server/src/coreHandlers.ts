@@ -17,6 +17,7 @@ import {
 import { parseMessage } from "./utils/generic.js";
 
 const quizzes = new Map<number, QuizManager>();
+const hosts = new Map<number, Host>();
 
 export default function messageHandler(
     connection: WebSocket,
@@ -47,6 +48,7 @@ export default function messageHandler(
 
         const host = new Host(hostId, username, connection);
         console.log("Host joined the connection: ", host);
+        hosts.set(hostId, host);
     } else if (payload.action === SupportedMessage.CreateQuiz) {
         /*
         payload = {
@@ -83,7 +85,19 @@ export default function messageHandler(
     */
 
         const participant = new Participant(userId, username, connection);
-        quizzes.get(quizId)?.addParticipant(participant);
+        const currentQuiz = quizzes.get(quizId);
+        const hostId = currentQuiz?.hostId;
+        if (hostId === undefined) return;
+        const currentHost = hosts.get(hostId);
+        const participants = [];
+        currentQuiz?.addParticipant(participant);
+        currentQuiz?.participants.forEach((participant, participantId) => {
+            participants.push(participant);
+        });
+
+        const outgoingPayloadHost = {};
+
+        const outgoingPayloadParticipant = {};
     } else if (payload.action === SupportedMessage.StartQuiz) {
         /*
         payload = {

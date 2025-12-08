@@ -1,5 +1,8 @@
+import type { Participant } from "../QuizManager.js";
+
 export enum SupportedMessageOutgoing {
     StartQuiz = "START_QUIZ",
+    ParticipantJoined = "PARTICIPANT_JOINED",
     NewQuestion = "NEW_QUESTION",
     ScoreBreak = "SCORE_BREAK",
     EndQuiz = "END_QUIZ",
@@ -9,6 +12,11 @@ export interface StartQuizOutgoingData {
     userId: number;
     score: 0;
     firstQuestionData: NewQuestionData;
+}
+
+export interface ParticipantJoinedData {
+    totalParticipants: number;
+    participants: Participant[];
 }
 
 export interface NewQuestionData {
@@ -36,6 +44,7 @@ export interface OutgoingMessage {
     action: SupportedMessageOutgoing;
     data:
         | StartQuizOutgoingData
+        | ParticipantJoinedData
         | NewQuestionData
         | ScoreBreakData
         | EndQuizData;
