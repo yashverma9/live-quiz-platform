@@ -1,11 +1,15 @@
 "use client";
 
 import useAuth from "@/hooks/useAuth";
-import { ParticipantMessageTypes, ParticipantSocketMessage } from "@/types";
+import {
+    ParticipantMessageTypes,
+    ParticipantMessageOutgoingTypes,
+    ParticipantSocketMessageIncoming,
+} from "@/types";
 import { useContext, createContext, useEffect, useState } from "react";
 
 export interface ParticipantContextType {
-    latestData: ParticipantSocketMessage | null;
+    latestData: ParticipantSocketMessageIncoming | null;
     socket: WebSocket | null;
 }
 
@@ -21,7 +25,7 @@ export function ParticipantProvider({
     const { participantId } = useAuth();
     const [socket, setSocket] = useState<WebSocket | null>(null);
     const [latestData, setLatestData] =
-        useState<ParticipantSocketMessage | null>(null);
+        useState<ParticipantSocketMessageIncoming | null>(null);
 
     useEffect(() => {
         if (!participantId) return;
@@ -34,7 +38,7 @@ export function ParticipantProvider({
             );
             ws.send(
                 JSON.stringify({
-                    action: ParticipantMessageTypes.JOIN_QUIZ,
+                    action: ParticipantMessageOutgoingTypes.JOIN_QUIZ,
                     data: {
                         participantId: participantId,
                     },

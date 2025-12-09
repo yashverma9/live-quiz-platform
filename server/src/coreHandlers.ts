@@ -11,7 +11,9 @@ import {
 import { Host, Participant, QuizManager } from "./QuizManager.js";
 import {
     SupportedMessageOutgoing,
+    type ParticipantJoinedData,
     type StartQuizOutgoingData,
+    type WaitForQuizStartData,
 } from "./models/outgoingMessages.js";
 
 import { parseMessage } from "./utils/generic.js";
@@ -89,15 +91,35 @@ export default function messageHandler(
         const hostId = currentQuiz?.hostId;
         if (hostId === undefined) return;
         const currentHost = hosts.get(hostId);
-        const participants = [];
+        const participants = [] as Participant[];
         currentQuiz?.addParticipant(participant);
         currentQuiz?.participants.forEach((participant, participantId) => {
             participants.push(participant);
         });
 
-        const outgoingPayloadHost = {};
+        const outgoingPayloadHost = {
+            action: SupportedMessageOutgoing.ParticipantJoined,
+            data: {
+                totalParticipants: participants.length,
+                participants: participants,
+            } as ParticipantJoinedData,
+        };
 
-        const outgoingPayloadParticipant = {};
+        const outgoingPayloadParticipant = {
+            action: SupportedMessageOutgoing.WaitForQuizStart,
+            data: {
+                participants: participants,
+                title: currentQuiz?.title,
+            } as WaitForQuizStartData,
+        };
+
+        currentQuiz?.sendMessage(
+            outgoingPayloadHost,
+            currentHost?.socket,
+            hostId
+        );
+
+        currentQuiz?.broadcastMessage(outgoingPayloadParticipant);
     } else if (payload.action === SupportedMessage.StartQuiz) {
         /*
         payload = {

@@ -21,7 +21,6 @@ export type Quizes = Quiz[];
 // Web socket related types - PARTICIPANTS
 
 export enum ParticipantMessageTypes {
-    JOIN_QUIZ = "JOIN_QUIZ",
     WAIT_FOR_QUIZ_START = "WAIT_FOR_QUIZ_START",
     NEW_QUESTION = "NEW_QUESTION",
     WAIT_FOR_NEXT_QUESTION = "WAIT_FOR_NEXT_QUESTION",
@@ -41,9 +40,20 @@ export interface Scores {
     score: number;
 }
 
-export interface ParticipantSocketMessage {
+export interface ParticipantSocketMessageIncoming {
     type: ParticipantMessageTypes;
     data: ParticipantQuestion | Scores[] | {};
+}
+
+// Participant socket outgoing messages (Client -> Backend)
+
+export enum ParticipantMessageOutgoingTypes {
+    JOIN_QUIZ = "JOIN_QUIZ",
+    ANSWER_QUESTION = "ANSWER_QUESTION",
+}
+
+export interface ParticipantSocketMessageOutgoing {
+    type: ParticipantMessageOutgoingTypes;
 }
 
 // Web socket related types - HOST

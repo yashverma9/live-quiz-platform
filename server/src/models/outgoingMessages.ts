@@ -2,7 +2,8 @@ import type { Participant } from "../QuizManager.js";
 
 export enum SupportedMessageOutgoing {
     StartQuiz = "START_QUIZ",
-    ParticipantJoined = "PARTICIPANT_JOINED",
+    ParticipantJoined = "PARTICIPANT_JOINED", // for host
+    WaitForQuizStart = "WAIT_FOR_QUIZ_START", // for participants
     NewQuestion = "NEW_QUESTION",
     ScoreBreak = "SCORE_BREAK",
     EndQuiz = "END_QUIZ",
@@ -14,9 +15,16 @@ export interface StartQuizOutgoingData {
     firstQuestionData: NewQuestionData;
 }
 
+// For host
 export interface ParticipantJoinedData {
     totalParticipants: number;
     participants: Participant[];
+}
+
+// For participants
+export interface WaitForQuizStartData {
+    participants: Participant[];
+    title: string;
 }
 
 export interface NewQuestionData {
@@ -45,6 +53,7 @@ export interface OutgoingMessage {
     data:
         | StartQuizOutgoingData
         | ParticipantJoinedData
+        | WaitForQuizStartData
         | NewQuestionData
         | ScoreBreakData
         | EndQuizData;

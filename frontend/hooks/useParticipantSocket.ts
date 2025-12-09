@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ParticipantSocketMessage } from "@/types";
+import { ParticipantSocketMessageIncoming } from "@/types";
 
 export default function useParticipantSocket() {
     const [socket, setSocket] = useState<null | WebSocket>(null);
     const [latestData, setLatestData] =
-        useState<null | ParticipantSocketMessage>(null);
+        useState<null | ParticipantSocketMessageIncoming>(null);
 
     useEffect(() => {
         const ws = new WebSocket("ws://localhost:8080");

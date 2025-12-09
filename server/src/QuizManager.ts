@@ -143,7 +143,15 @@ export class QuizManager {
         });
     }
 
-    sendMessage(message: OutgoingMessage, socket: WebSocket, id: Number) {
+    sendMessage(
+        message: OutgoingMessage,
+        socket: WebSocket | undefined,
+        id: Number
+    ) {
+        if (!socket) {
+            console.log("Unable to send message as socket invalid");
+            return;
+        }
         socket.send(JSON.stringify(message));
         console.log(
             "Message being sent to specific host/participant id: ",
